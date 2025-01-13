@@ -1,6 +1,3 @@
-# virtual-print-server
-Этот код реализует сервер печати, который принимает данные по сети, сохраняет их во временный файл и отправляет на печать через указанный принтер.
-
 # Printer Server
 
 This project is a simple TCP-based print server designed to work with Windows printers, such as the Xprinter XP-365B. It listens for incoming connections, receives print jobs, and sends them to the configured printer.

@@ -20,7 +20,7 @@ This project is a simple TCP-based print server designed to work with Windows pr
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Timtrr/printer-server.git
+   git clone https://github.com/Timtrr/virtual-print-server.git
    cd printer-server
    ```
 

@@ -2,8 +2,27 @@ import socket
 import win32print
 import win32api
 import os
+import configparser
 
-def print_file(data):
+def load_settings():
+    config = configparser.ConfigParser()
+    settings_file = "settings.ini"
+
+    # Проверка наличия файла settings.ini
+    if not os.path.exists(settings_file):
+        print("Файл settings.ini не найден. Создаем файл с настройками по умолчанию.")
+        config["Printer"] = {"name": "Xprinter XP-365B"}
+        with open(settings_file, "w") as configfile:
+            config.write(configfile)
+
+    config.read(settings_file)
+    
+    if "Printer" not in config or "name" not in config["Printer"]:
+        raise ValueError("Настройки принтера не найдены в файле settings.ini")
+    
+    return config["Printer"]["name"]
+
+def print_file(data, printer_name):
     file_path = "print_job.pdf"
     
     try:
@@ -12,7 +31,6 @@ def print_file(data):
             f.write(data)
         
         # Настройка принтера
-        printer_name = "Xprinter XP-365B"
         hprinter = win32print.OpenPrinter(printer_name)
         try:
             # Создание задания на печать
@@ -32,6 +50,8 @@ def print_file(data):
             os.remove(file_path)
 
 def start_server(host='0.0.0.0', port=9100):
+    printer_name = load_settings()
+    
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
     server_socket.listen(5)
@@ -49,7 +69,7 @@ def start_server(host='0.0.0.0', port=9100):
                 data.extend(packet)
             
             if data:
-                print_file(data)
+                print_file(data, printer_name)
             else:
                 print("Получены пустые данные.")
         except Exception as e:
